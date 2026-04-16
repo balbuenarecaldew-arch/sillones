@@ -18,6 +18,9 @@ await setPersistence(auth, browserLocalPersistence);
 
 const COLLECTIONS = { products: "products", admins: "admins", home: "home", settings: "settings" };
 const DOCS = { home: "content", settings: "general" };
+const ADMIN_UIDS = new Set([
+  "aPc1gQTq6SXHgYNeUoGEikJAW7l2"
+]);
 
 async function getSettings() {
   const snapshot = await getDoc(doc(db, COLLECTIONS.settings, DOCS.settings));
@@ -71,8 +74,11 @@ async function reorderProducts(products) {
 
 async function isAdmin(uid) {
   if (!uid) return false;
+  if (ADMIN_UIDS.has(uid)) return true;
   const snapshot = await getDoc(doc(db, COLLECTIONS.admins, uid));
-  return snapshot.exists() && snapshot.data()?.role === "admin";
+  if (!snapshot.exists()) return false;
+  const data = snapshot.data() || {};
+  return data.role === "admin" || data.admin === true || data.isAdmin === true || data.activo === true;
 }
 
 async function getInitialProducts() {
