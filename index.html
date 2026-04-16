@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sillones FB | Sillones en Buenos Aires</title>
+  <meta name="description" content="Sillones FB en Buenos Aires. Esquineros, 2 cuerpos, 3 cuerpos y puff con atención rápida por WhatsApp.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="public">
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="Sillones FB">
+        <span class="brand-mark">FB</span>
+        <span>
+          <strong>Sillones FB</strong>
+          <small>Buenos Aires</small>
+        </span>
+      </a>
+      <nav class="topnav">
+        <a href="#catalogo">Catálogo</a>
+        <a href="#ofertas">Ofertas</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="inicio">
+        <div class="hero-copy">
+          <span class="eyebrow">Diseño, confort y atención inmediata</span>
+          <h1 id="banner-text">Renová tu living con sillones listos para enamorar.</h1>
+          <p id="hero-description">Elegí modelos modernos, consultá medidas en segundos y cerrá la compra directo por WhatsApp.</p>
+          <div class="hero-actions">
+            <a id="banner-button" class="btn btn-primary" href="https://wa.me/5411000000000" target="_blank" rel="noreferrer">Hablar por WhatsApp</a>
+            <a class="btn btn-secondary" href="#catalogo">Ver catálogo</a>
+          </div>
+          <div class="hero-points">
+            <span>Entrega coordinada</span>
+            <span>Modelos destacados</span>
+            <span>Atención móvil-first</span>
+          </div>
+        </div>
+        <div class="hero-media">
+          <div class="hero-glow"></div>
+          <img id="banner-image" src="galeria%20de%20fotos/Gemini_Generated_Image_m76nk4m76nk4m76n.png" alt="Banner principal de Sillones FB">
+        </div>
+      </section>
+
+      <section class="highlights">
+        <article class="highlight-card">
+          <span class="highlight-label">Ofertas activas</span>
+          <strong id="offer-count">0</strong>
+          <p>Promociones destacadas con acceso directo a consulta.</p>
+        </article>
+        <article class="highlight-card">
+          <span class="highlight-label">Respuesta rápida</span>
+          <strong>WhatsApp</strong>
+          <p>Un solo toque para consultar precio, stock y medidas.</p>
+        </article>
+        <article class="highlight-card">
+          <span class="highlight-label">Catálogo vivo</span>
+          <strong>Editable</strong>
+          <p>El contenido se actualiza desde el panel admin sin tocar código.</p>
+        </article>
+      </section>
+
+      <section class="section" id="ofertas">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Oportunidades</span>
+            <h2>Ofertas que convierten</h2>
+          </div>
+          <a class="text-link" href="#catalogo">Ir al catálogo</a>
+        </div>
+        <div id="offers-grid" class="products-grid"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Selección FB</span>
+            <h2>Productos destacados</h2>
+          </div>
+        </div>
+        <div id="featured-grid" class="products-grid"></div>
+      </section>
+
+      <section class="section" id="catalogo">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Catálogo</span>
+            <h2>Encontrá el sillón ideal</h2>
+          </div>
+        </div>
+        <div id="catalog-filters" class="filter-row" aria-label="Filtro de categorías"></div>
+        <div id="catalog-grid" class="products-grid"></div>
+      </section>
+
+      <section class="section contact-section" id="contacto">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Contacto</span>
+            <h2>Coordiná tu compra</h2>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div>
+            <h3>Atención por WhatsApp</h3>
+            <p id="contact-whatsapp-label">+54 11 0000 0000</p>
+          </div>
+          <div>
+            <h3>Dirección</h3>
+            <p id="contact-address">Buenos Aires, Argentina</p>
+          </div>
+          <div>
+            <h3>Horarios</h3>
+            <p id="contact-hours">Lunes a sábado de 9 a 19 hs</p>
+          </div>
+          <a id="contact-whatsapp-button" class="btn btn-primary btn-full" href="https://wa.me/5411000000000" target="_blank" rel="noreferrer">Escribir ahora</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <a id="floating-whatsapp" class="floating-whatsapp" href="https://wa.me/5411000000000" target="_blank" rel="noreferrer" aria-label="Abrir WhatsApp">
+    <span>WhatsApp</span>
+  </a>
+
+  <template id="product-card-template">
+    <article class="product-card reveal">
+      <div class="product-image-wrap">
+        <img class="product-image" src="" alt="">
+        <span class="product-badge hidden"></span>
+      </div>
+      <div class="product-body">
+        <div class="product-meta">
+          <span class="product-category"></span>
+          <h3 class="product-name"></h3>
+        </div>
+        <p class="product-description"></p>
+        <div class="product-pricing">
+          <span class="product-old-price hidden"></span>
+          <strong class="product-price"></strong>
+        </div>
+        <a class="btn btn-primary btn-full product-whatsapp" href="#" target="_blank" rel="noreferrer">Consultar por WhatsApp</a>
+      </div>
+    </article>
+  </template>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

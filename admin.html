@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Sillones FB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="admin">
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <span class="brand-mark">FB</span>
+        <div>
+          <strong>Sillones FB</strong>
+          <small>Panel móvil</small>
+        </div>
+      </div>
+      <nav class="admin-menu">
+        <a href="#dashboard">Resumen</a>
+        <a href="#productos">Productos</a>
+        <a href="#home">Home</a>
+        <a href="#ajustes">Ajustes</a>
+      </nav>
+      <button id="logout-button" class="btn btn-secondary hidden" type="button">Cerrar sesión</button>
+    </aside>
+
+    <main class="admin-main">
+      <section id="login-view" class="admin-login-card">
+        <div class="section-heading compact">
+          <div>
+            <span class="eyebrow">Acceso admin</span>
+            <h1>Gestioná tu tienda desde el celular</h1>
+          </div>
+        </div>
+        <form id="login-form" class="admin-form">
+          <label>Email<input type="email" id="login-email" placeholder="admin@sillonesfb.com" required></label>
+          <label>Contraseña<input type="password" id="login-password" placeholder="Tu contraseña" required></label>
+          <button class="btn btn-primary btn-full" type="submit">Ingresar</button>
+        </form>
+      </section>
+
+      <div id="admin-view" class="hidden">
+        <section class="section-heading">
+          <div>
+            <span class="eyebrow">Dashboard</span>
+            <h1>Panel de gestión</h1>
+          </div>
+          <div class="dashboard-kpis">
+            <div class="kpi-card"><span>Visibles</span><strong id="kpi-visible">0</strong></div>
+            <div class="kpi-card"><span>Ofertas</span><strong id="kpi-offers">0</strong></div>
+            <div class="kpi-card"><span>Destacados</span><strong id="kpi-featured">0</strong></div>
+          </div>
+        </section>
+
+        <section class="admin-grid" id="dashboard">
+          <article class="panel-card" id="productos">
+            <div class="card-head"><div><span class="eyebrow">Productos</span><h2>Crear o editar</h2></div></div>
+            <form id="product-form" class="admin-form">
+              <input type="hidden" id="product-id">
+              <label>Nombre<input type="text" id="product-name" maxlength="80" required></label>
+              <label>Precio actual<input type="number" id="product-price" min="0" step="0.01" required></label>
+              <label>Precio anterior<input type="number" id="product-old-price" min="0" step="0.01" placeholder="Opcional para ofertas"></label>
+              <label>Categoría
+                <select id="product-category" required>
+                  <option value="Esquineros">Esquineros</option>
+                  <option value="2 cuerpos">2 cuerpos</option>
+                  <option value="3 cuerpos">3 cuerpos</option>
+                  <option value="Puff">Puff</option>
+                </select>
+              </label>
+              <label>Descripción<textarea id="product-description" rows="4" maxlength="220" required></textarea></label>
+              <label>Carpeta Cloudinary
+                <select id="product-folder">
+                  <option value="productos">productos</option>
+                  <option value="ofertas">ofertas</option>
+                  <option value="home">home</option>
+                </select>
+              </label>
+              <input type="hidden" id="product-image-url">
+              <input type="hidden" id="product-image-public-id">
+              <button class="btn btn-secondary" id="product-upload-widget" type="button">Subir imagen con Cloudinary</button>
+              <div class="image-preview-wrap"><img id="product-preview" class="image-preview hidden" alt="Vista previa del producto"></div>
+              <div class="check-grid">
+                <label class="switch-row"><input type="checkbox" id="product-featured"> Destacado</label>
+                <label class="switch-row"><input type="checkbox" id="product-offer"> Oferta</label>
+                <label class="switch-row"><input type="checkbox" id="product-visible" checked> Visible</label>
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Guardar producto</button>
+                <button class="btn btn-secondary" id="reset-product" type="button">Limpiar</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="panel-card">
+            <div class="card-head"><div><span class="eyebrow">Listado</span><h2>Ordenar y administrar</h2></div></div>
+            <p class="muted">Podés arrastrar los productos para cambiar su orden de aparición.</p>
+            <div id="admin-products-list" class="admin-product-list"></div>
+          </article>
+
+          <article class="panel-card" id="home">
+            <div class="card-head"><div><span class="eyebrow">Home</span><h2>Banner principal</h2></div></div>
+            <form id="home-form" class="admin-form">
+              <label>Texto principal<input type="text" id="home-banner-text" maxlength="120" required></label>
+              <label>Texto del botón<input type="text" id="home-banner-button" maxlength="40" required></label>
+              <label>Carpeta Cloudinary
+                <select id="home-banner-folder">
+                  <option value="home">home</option>
+                  <option value="productos">productos</option>
+                  <option value="ofertas">ofertas</option>
+                </select>
+              </label>
+              <input type="hidden" id="home-banner-image-url">
+              <input type="hidden" id="home-banner-image-public-id">
+              <button class="btn btn-secondary" id="home-upload-widget" type="button">Subir banner con Cloudinary</button>
+              <div class="image-preview-wrap"><img id="home-banner-preview" class="image-preview hidden" alt="Vista previa del banner"></div>
+              <button class="btn btn-primary" type="submit">Guardar home</button>
+            </form>
+          </article>
+
+          <article class="panel-card" id="ajustes">
+            <div class="card-head"><div><span class="eyebrow">Ajustes</span><h2>Contacto y Cloudinary</h2></div></div>
+            <form id="settings-form" class="admin-form">
+              <label>WhatsApp<input type="text" id="settings-whatsapp" placeholder="541112345678" required></label>
+              <label>Dirección<input type="text" id="settings-address" maxlength="120" required></label>
+              <label>Horario<input type="text" id="settings-hours" maxlength="120" required></label>
+              <label>Cloudinary cloud name<input type="text" id="settings-cloud-name" placeholder="tu-cloud-name"></label>
+              <label>Upload preset<input type="text" id="settings-upload-preset" placeholder="unsigned_preset"></label>
+              <button class="btn btn-primary" type="submit">Guardar ajustes</button>
+            </form>
+          </article>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
