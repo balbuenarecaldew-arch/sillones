@@ -24,6 +24,24 @@ function money(value) {
   return currency.format(Number(value || 0));
 }
 
+function resolveImageUrl(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return DEFAULTS.bannerImagen;
+  if (raw.includes("galeria%20de%20fotos/")) {
+    return raw.replace("galeria%20de%20fotos/", "galeria de fotos/");
+  }
+  return raw;
+}
+
+function attachImageFallback(image, fallback = DEFAULTS.bannerImagen) {
+  if (!image) return;
+  image.addEventListener("error", () => {
+    if (image.dataset.fallbackApplied === "true") return;
+    image.dataset.fallbackApplied = "true";
+    image.src = fallback;
+  });
+}
+
 function buildWhatsAppUrl(phone, productName = "") {
   const cleanPhone = sanitizePhone(phone) || DEFAULTS.whatsapp;
   const text = productName ? `Hola! Quiero consultar por ${productName} en Sillones FB.` : "Hola! Quiero informacion sobre los sillones de Sillones FB.";
@@ -32,7 +50,8 @@ function buildWhatsAppUrl(phone, productName = "") {
 
 function showPreview(url, targetImage) {
   if (!url || !targetImage) return;
-  targetImage.src = url;
+  targetImage.dataset.fallbackApplied = "false";
+  targetImage.src = resolveImageUrl(url);
   targetImage.classList.remove("hidden");
 }
 
@@ -78,6 +97,7 @@ async function loadPublicPage() {
   const [home, settings, initialProducts] = await Promise.all([getHome(), getSettings(), getInitialProducts()]);
   let currentProducts = initialProducts.filter((product) => product.visible);
   let currentCategory = "Todos";
+  attachImageFallback(qs("#banner-image"));
 
   applyHome(home, settings);
   applySettings(settings);
@@ -92,7 +112,9 @@ async function loadPublicPage() {
   function applyHome(data, currentSettings) {
     qs("#banner-text").textContent = data?.bannerTexto || DEFAULTS.bannerTexto;
     qs("#banner-button").textContent = data?.bannerBoton || DEFAULTS.bannerBoton;
-    qs("#banner-image").src = data?.bannerImagen || DEFAULTS.bannerImagen;
+    const bannerImage = qs("#banner-image");
+    bannerImage.dataset.fallbackApplied = "false";
+    bannerImage.src = resolveImageUrl(data?.bannerImagen || DEFAULTS.bannerImagen);
     qs("#banner-button").href = buildWhatsAppUrl(currentSettings?.whatsapp);
   }
 
@@ -156,7 +178,9 @@ function renderProducts(container, items, settings) {
     const oldPrice = qs(".product-old-price", fragment);
     const button = qs(".product-whatsapp", fragment);
     card.style.animationDelay = `${index * 40}ms`;
-    image.src = product.imagenUrl || DEFAULTS.bannerImagen;
+    image.dataset.fallbackApplied = "false";
+    attachImageFallback(image);
+    image.src = resolveImageUrl(product.imagenUrl || DEFAULTS.bannerImagen);
     image.alt = product.nombre;
     qs(".product-category", fragment).textContent = product.categoria;
     qs(".product-name", fragment).textContent = product.nombre;
@@ -336,6 +360,7 @@ async function loadAdminPage() {
     if (home?.bannerImagen) {
       homeImageUrlInput.value = home.bannerImagen;
       homeImagePublicIdInput.value = home.bannerPublicId || "";
+      attachImageFallback(homePreview);
       showPreview(home.bannerImagen, homePreview);
     }
     qs("#settings-whatsapp").value = settings?.whatsapp || DEFAULTS.whatsapp;
@@ -383,7 +408,7 @@ async function loadAdminPage() {
           </div>
           <span class="mini-badge">Orden ${product.orden || "-"}</span>
         </div>
-        <img src="${product.imagenUrl || DEFAULTS.bannerImagen}" alt="${product.nombre}">
+        <img src="${resolveImageUrl(product.imagenUrl || DEFAULTS.bannerImagen)}" alt="${product.nombre}">
         <div class="check-grid">
           <span class="mini-badge">${product.visible ? "Visible" : "Oculto"}</span>
           <span class="mini-badge">${product.destacado ? "Destacado" : "Normal"}</span>
@@ -447,6 +472,7 @@ async function loadAdminPage() {
     productImageUrlInput.value = product.imagenUrl || "";
     productImagePublicIdInput.value = product.public_id || "";
     if (product.imagenUrl) {
+      attachImageFallback(productPreview);
       showPreview(product.imagenUrl, productPreview);
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
