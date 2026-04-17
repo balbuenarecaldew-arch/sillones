@@ -7,7 +7,7 @@ const DEFAULTS = {
   horario: "Lunes a sabado de 9 a 19 hs",
   bannerTexto: "Renova tu living con sillones listos para enamorar.",
   bannerBoton: "Hablar por WhatsApp",
-  bannerImagen: "galeria%20de%20fotos/Gemini_Generated_Image_m76nk4m76nk4m76n.png"
+  bannerImagen: "galeria de fotos/Gemini_Generated_Image_m76nk4m76nk4m76n.png"
 };
 
 const CATEGORIES = ["Todos", "Esquineros", "2 cuerpos", "3 cuerpos", "Puff"];
