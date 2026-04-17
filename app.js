@@ -7,7 +7,7 @@ const DEFAULTS = {
   horario: "Lunes a sabado de 9 a 19 hs",
   bannerTexto: "Renova tu living con sillones listos para enamorar.",
   bannerBoton: "Hablar por WhatsApp",
-  bannerImagen: "brand-banner.svg"
+  bannerImagen: "logo-banner.png"
 };
 
 const CATEGORIES = ["Todos", "Esquinero .. sillon L | doble", "Esquinero .. sillon L .. individuales", "Respaldos", "Bauleras", "Puff", "Sillas", "Materas", "Lahista para cejas", "Butacones", "Sillones a medida", "OTROS"];
@@ -33,7 +33,7 @@ function resolveImageUrl(value) {
   if (raw.includes("galeria de fotos/")) {
     return DEFAULTS.bannerImagen;
   }
-  if (raw.includes("logo-banner.png")) {
+  if (raw.includes("brand-banner.svg")) {
     return DEFAULTS.bannerImagen;
   }
   return raw;
