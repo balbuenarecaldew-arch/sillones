@@ -68,6 +68,21 @@ function setupBackToCatalog() {
   });
 }
 
+function setupCatalogLinks() {
+  const catalogSection = qs("#catalogo");
+  if (!catalogSection) return;
+
+  ["#hero-catalog-button", 'a[href="#catalogo"]'].forEach((selector) => {
+    qsa(selector).forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        history.replaceState({ ...(history.state || {}), sillonesFbGuard: true, step: "catalogo" }, "", "#catalogo");
+        catalogSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  });
+}
+
 function resolveImageUrl(value) {
   const raw = String(value || "").trim();
   if (!raw) return DEFAULTS.bannerImagen;
@@ -182,6 +197,7 @@ async function loadPublicPage() {
   attachImageFallback(qs("#banner-image"));
   setupLightbox();
   setupBackToCatalog();
+  setupCatalogLinks();
 
   applyHome(home, settings);
   applySettings(settings);
