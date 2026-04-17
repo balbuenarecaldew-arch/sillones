@@ -51,6 +51,23 @@ function applyTheme(theme) {
   }
 }
 
+function setupBackToCatalog() {
+  const catalogSection = qs("#catalogo");
+  if (!catalogSection) return;
+
+  const currentState = history.state || {};
+  if (!currentState.sillonesFbGuard) {
+    history.replaceState({ ...currentState, sillonesFbGuard: true, step: "base" }, "", window.location.href);
+    history.pushState({ sillonesFbGuard: true, step: "guard" }, "", window.location.href);
+  }
+
+  window.addEventListener("popstate", () => {
+    const isCatalogTarget = window.location.hash === "#catalogo";
+    if (isCatalogTarget) return;
+    catalogSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
 function resolveImageUrl(value) {
   const raw = String(value || "").trim();
   if (!raw) return DEFAULTS.bannerImagen;
@@ -164,6 +181,7 @@ async function loadPublicPage() {
   let currentCategory = "Todos";
   attachImageFallback(qs("#banner-image"));
   setupLightbox();
+  setupBackToCatalog();
 
   applyHome(home, settings);
   applySettings(settings);
