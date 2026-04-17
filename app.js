@@ -26,6 +26,7 @@ const currency = new Intl.NumberFormat("es-AR", { style: "currency", currency: "
 const qs = (selector, scope = document) => scope.querySelector(selector);
 const qsa = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
 const LOCAL_BANNER = "logo-banner.png";
+const THEMES = new Set(["light", "dark"]);
 
 function sanitizePhone(value) {
   return String(value || "").replace(/\D/g, "");
@@ -33,6 +34,14 @@ function sanitizePhone(value) {
 
 function money(value) {
   return currency.format(Number(value || 0));
+}
+
+function resolveTheme(value) {
+  return THEMES.has(value) ? value : "light";
+}
+
+function applyTheme(theme) {
+  document.body.dataset.theme = resolveTheme(theme);
 }
 
 function resolveImageUrl(value) {
@@ -147,6 +156,7 @@ async function loadPublicPage() {
   let currentProducts = initialProducts.filter((product) => product.visible);
   let currentCategory = "Todos";
   attachImageFallback(qs("#banner-image"));
+  setupLightbox();
 
   applyHome(home, settings);
   applySettings(settings);
@@ -170,6 +180,7 @@ async function loadPublicPage() {
   function applySettings(data) {
     const phone = data?.whatsapp || DEFAULTS.whatsapp;
     const buttonUrl = buildWhatsAppUrl(phone);
+    applyTheme(data?.theme);
     qs("#floating-whatsapp").href = buttonUrl;
     qs("#contact-whatsapp-button").href = buttonUrl;
     qs("#contact-whatsapp-label").textContent = `+${phone}`;
@@ -231,6 +242,8 @@ function renderProducts(container, items, settings) {
     attachImageFallback(image);
     image.src = resolveImageUrl(product.imagenUrl || DEFAULTS.bannerImagen);
     image.alt = product.nombre;
+    image.dataset.fullsrc = resolveImageUrl(product.imagenUrl || DEFAULTS.bannerImagen);
+    image.dataset.fullalt = product.nombre;
     qs(".product-category", fragment).textContent = product.categoria;
     qs(".product-name", fragment).textContent = product.nombre;
     qs(".product-description", fragment).textContent = product.descripcion;
@@ -259,6 +272,52 @@ function renderProducts(container, items, settings) {
   });
 }
 
+function setupLightbox() {
+  const lightbox = qs("#lightbox");
+  const lightboxImage = qs("#lightbox-image");
+  const closeButton = qs("#lightbox-close");
+  const bannerImage = qs("#banner-image");
+
+  if (!lightbox || !lightboxImage || !closeButton) return;
+
+  function openLightbox(src, alt) {
+    lightboxImage.src = src;
+    lightboxImage.alt = alt || "Imagen ampliada";
+    lightbox.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeLightbox() {
+    lightbox.classList.add("hidden");
+    lightboxImage.src = "";
+    document.body.style.overflow = "";
+  }
+
+  bannerImage?.classList.add("zoomable");
+  bannerImage?.addEventListener("click", () => {
+    openLightbox(resolveImageUrl(bannerImage.getAttribute("src")), bannerImage.alt);
+  });
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const zoomable = target.closest(".zoomable");
+    if (!zoomable || zoomable.id === "banner-image") return;
+    const image = zoomable;
+    openLightbox(image.dataset.fullsrc || image.getAttribute("src") || "", image.dataset.fullalt || image.getAttribute("alt") || "");
+  });
+
+  closeButton.addEventListener("click", closeLightbox);
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox) closeLightbox();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !lightbox.classList.contains("hidden")) {
+      closeLightbox();
+    }
+  });
+}
+
 async function loadAdminPage() {
   const loginView = qs("#login-view");
   const adminView = qs("#admin-view");
@@ -275,6 +334,7 @@ async function loadAdminPage() {
   const homeImagePublicIdInput = qs("#home-banner-image-public-id");
   const homeCurrentUrlInput = qs("#home-banner-current-url");
   const autoReplyInput = qs("#settings-auto-reply");
+  const themeInput = qs("#settings-theme");
   const state = { products: [], draggingId: null };
 
   loginForm.addEventListener("submit", async (event) => {
@@ -397,6 +457,7 @@ async function loadAdminPage() {
         whatsapp: sanitizePhone(qs("#settings-whatsapp").value),
         direccion: qs("#settings-address").value.trim(),
         horario: qs("#settings-hours").value.trim(),
+        theme: resolveTheme(themeInput.value),
         cloudinaryCloudName: qs("#settings-cloud-name").value.trim(),
         cloudinaryUploadPreset: qs("#settings-upload-preset").value.trim(),
         autoReply: autoReplyInput.value.trim()
@@ -431,6 +492,7 @@ async function loadAdminPage() {
 
   async function hydrateAdmin() {
     const [home, settings] = await Promise.all([getHome(), getSettings()]);
+    applyTheme(settings?.theme);
     qs("#home-banner-text").value = home?.bannerTexto || DEFAULTS.bannerTexto;
     qs("#home-banner-button").value = home?.bannerBoton || DEFAULTS.bannerBoton;
     const activeBanner = home?.bannerImagen || DEFAULTS.bannerImagen;
@@ -447,6 +509,7 @@ async function loadAdminPage() {
     qs("#settings-whatsapp").value = settings?.whatsapp || DEFAULTS.whatsapp;
     qs("#settings-address").value = settings?.direccion || DEFAULTS.direccion;
     qs("#settings-hours").value = settings?.horario || DEFAULTS.horario;
+    themeInput.value = resolveTheme(settings?.theme);
     qs("#settings-cloud-name").value = settings?.cloudinaryCloudName || "";
     qs("#settings-upload-preset").value = settings?.cloudinaryUploadPreset || "";
     autoReplyInput.value = settings?.autoReply || DEFAULTS.autoReply;

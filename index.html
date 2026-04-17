@@ -140,10 +140,15 @@
     <span>WhatsApp</span>
   </a>
 
+  <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-label="Vista ampliada">
+    <button id="lightbox-close" class="lightbox-close" type="button" aria-label="Cerrar imagen">×</button>
+    <img id="lightbox-image" class="lightbox-image" src="" alt="">
+  </div>
+
   <template id="product-card-template">
     <article class="product-card reveal">
       <div class="product-image-wrap">
-        <img class="product-image" src="" alt="">
+        <img class="product-image zoomable" src="" alt="">
         <span class="product-badge hidden"></span>
       </div>
       <div class="product-body">
