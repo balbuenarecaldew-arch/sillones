@@ -135,15 +135,7 @@ button, input, textarea, select { font: inherit; }
   gap: 14px;
 }
 .hero-copy h1 { max-width: none; width: 100%; }
-.hero-copy::after {
-  content: "";
-  position: absolute;
-  inset: auto -60px -80px auto;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background: rgba(175, 110, 61, 0.12);
-}
+.hero-copy::after { content: none; }
 .eyebrow {
   display: inline-flex;
   margin-bottom: 10px;
@@ -427,6 +419,25 @@ h2 { font-size: clamp(2.2rem, 7vw, 3.2rem); }
 
 @media (min-width: 980px) {
   .hero { grid-template-columns: 1fr; align-items: stretch; }
+  .hero-copy {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 16px;
+  }
+  .hero-copy .eyebrow,
+  .hero-copy h1,
+  .hero-copy #hero-description {
+    grid-column: 1 / -1;
+  }
+  .hero-actions {
+    margin-top: 0;
+    flex-wrap: nowrap;
+  }
+  .hero-points {
+    margin-top: 0;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+  }
   .highlights { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .products-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .contact-card { grid-template-columns: repeat(4, minmax(0, 1fr)); }
