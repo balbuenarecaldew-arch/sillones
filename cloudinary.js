@@ -1,13 +1,16 @@
 import { getSettings } from "./firebase.js";
 
+const DEFAULT_CLOUD_NAME = "dxxyibglf";
+const DEFAULT_UPLOAD_PRESET = "sillonesfb_unsigned";
+
 function normalizeFolder(folder) {
   return `sillones-fb/${folder || "productos"}`;
 }
 
 async function createUploadWidget(folder = "productos") {
   const settings = await getSettings();
-  const cloudName = settings?.cloudinaryCloudName || "";
-  const uploadPreset = settings?.cloudinaryUploadPreset || "sillonesfb_unsigned";
+  const cloudName = settings?.cloudinaryCloudName || DEFAULT_CLOUD_NAME;
+  const uploadPreset = settings?.cloudinaryUploadPreset || DEFAULT_UPLOAD_PRESET;
 
   if (!cloudName) {
     throw new Error("Configurá Cloudinary cloud name en Ajustes antes de subir imágenes.");
