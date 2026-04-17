@@ -127,7 +127,7 @@ button, input, textarea, select { font: inherit; }
 }
 
 .hero-copy { position: relative; overflow: hidden; padding: 28px; border-radius: var(--radius-lg); }
-.hero-copy h1 { max-width: 7.2ch; }
+.hero-copy h1 { max-width: 12ch; }
 .hero-copy::after {
   content: "";
   position: absolute;
@@ -151,7 +151,7 @@ button, input, textarea, select { font: inherit; }
 }
 h1, h2, h3, p { margin: 0; }
 h1, h2 { font-family: "Bebas Neue", sans-serif; letter-spacing: 0.03em; line-height: 0.95; }
-h1 { font-size: clamp(2.2rem, 5.6vw, 4.2rem); }
+h1 { font-size: clamp(2rem, 4.5vw, 3.6rem); }
 h2 { font-size: clamp(2.2rem, 7vw, 3.2rem); }
 .muted, .product-description, .highlight-card p, .contact-card p, #hero-description { color: var(--muted); line-height: 1.6; }
 
@@ -377,7 +377,7 @@ h2 { font-size: clamp(2.2rem, 7vw, 3.2rem); }
 }
 
 @media (min-width: 980px) {
-  .hero { grid-template-columns: minmax(280px, 0.28fr) minmax(0, 0.72fr); align-items: stretch; }
+  .hero { grid-template-columns: 1fr; align-items: stretch; }
   .highlights { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .products-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .contact-card { grid-template-columns: repeat(4, minmax(0, 1fr)); }
