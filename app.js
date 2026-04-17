@@ -51,34 +51,69 @@ function applyTheme(theme) {
   }
 }
 
+function navigateToCatalog(pushHistory = true) {
+  const catalogSection = qs("#catalogo");
+  if (!catalogSection) return;
+  const targetUrl = `${window.location.pathname}${window.location.search}#catalogo`;
+  if (pushHistory) {
+    history.pushState({ sillonesFbGuard: true, step: "catalogo" }, "", targetUrl);
+  } else {
+    history.replaceState({ ...(history.state || {}), sillonesFbGuard: true, step: "catalogo" }, "", targetUrl);
+  }
+  catalogSection.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function setupBackToCatalog() {
   const catalogSection = qs("#catalogo");
   if (!catalogSection) return;
+  let lastBackPressAt = 0;
+  let allowExit = false;
 
   const currentState = history.state || {};
   if (!currentState.sillonesFbGuard) {
-    history.replaceState({ ...currentState, sillonesFbGuard: true, step: "base" }, "", window.location.href);
+    history.replaceState({ ...currentState, sillonesFbGuard: true, step: "home" }, "", window.location.href);
     history.pushState({ sillonesFbGuard: true, step: "guard" }, "", window.location.href);
   }
 
   window.addEventListener("popstate", () => {
-    const isCatalogTarget = window.location.hash === "#catalogo";
-    if (isCatalogTarget) return;
-    catalogSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (allowExit) {
+      allowExit = false;
+      return;
+    }
+
+    const isInCatalog = window.location.hash === "#catalogo";
+    const now = Date.now();
+
+    if (!isInCatalog) {
+      navigateToCatalog(false);
+      history.pushState({ sillonesFbGuard: true, step: "guard" }, "", window.location.href);
+      lastBackPressAt = now;
+      createToast("Tocá atrás otra vez para salir");
+      return;
+    }
+
+    if (now - lastBackPressAt < 1400) {
+      allowExit = true;
+      history.back();
+      return;
+    }
+
+    lastBackPressAt = now;
+    createToast("Tocá atrás otra vez para salir");
+    history.pushState({ sillonesFbGuard: true, step: "guard" }, "", window.location.href);
   });
 }
 
 function setupCatalogLinks() {
-  const catalogSection = qs("#catalogo");
-  if (!catalogSection) return;
+  const uniqueLinks = new Set([
+    ...qsa("#hero-catalog-button"),
+    ...qsa('a[href="#catalogo"]')
+  ]);
 
-  ["#hero-catalog-button", 'a[href="#catalogo"]'].forEach((selector) => {
-    qsa(selector).forEach((link) => {
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
-        history.replaceState({ ...(history.state || {}), sillonesFbGuard: true, step: "catalogo" }, "", "#catalogo");
-        catalogSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
+  uniqueLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      navigateToCatalog(true);
     });
   });
 }
