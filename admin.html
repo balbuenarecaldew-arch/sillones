@@ -62,6 +62,7 @@
             <div class="card-head"><div><span class="eyebrow">Productos</span><h2>Crear o editar</h2></div></div>
             <form id="product-form" class="admin-form">
               <input type="hidden" id="product-id">
+              <label>Código<input type="text" id="product-code" maxlength="24" placeholder="FB-001 o automático"></label>
               <label>Nombre<input type="text" id="product-name" maxlength="80" required></label>
               <label>Precio actual<input type="number" id="product-price" min="0" step="0.01" required></label>
               <label>Precio anterior<input type="number" id="product-old-price" min="0" step="0.01" placeholder="Opcional para ofertas"></label>
@@ -143,6 +144,8 @@
               <label>Horario<input type="text" id="settings-hours" maxlength="120" required></label>
               <label>Cloudinary cloud name<input type="text" id="settings-cloud-name" placeholder="tu-cloud-name"></label>
               <label>Upload preset<input type="text" id="settings-upload-preset" placeholder="unsigned_preset"></label>
+              <label>Respuesta automática sugerida<textarea id="settings-auto-reply" rows="8"></textarea></label>
+              <button class="btn btn-secondary" id="copy-auto-reply" type="button">Copiar respuesta automática</button>
               <button class="btn btn-primary" type="submit">Guardar ajustes</button>
             </form>
           </article>

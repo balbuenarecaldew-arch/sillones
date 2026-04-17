@@ -7,7 +7,17 @@ const DEFAULTS = {
   horario: "Lunes a sabado de 9 a 19 hs",
   bannerTexto: "Renova tu living con sillones listos para enamorar.",
   bannerBoton: "Hablar por WhatsApp",
-  bannerImagen: "logo-banner.png"
+  bannerImagen: "logo-banner.png",
+  autoReply: `¡Hola! Gracias por escribir a Sillones FB 🙌
+Ya recibimos tu consulta por el modelo que viste en la web.
+
+En un momento te respondemos con:
+• precio actualizado
+• medidas
+• colores disponibles
+• tiempo de entrega
+
+Si querés, también podés adelantarnos tu zona y el color que te interesa para ayudarte más rápido.`
 };
 
 const CATEGORIES = ["Todos", "Esquinero .. sillon L | doble", "Esquinero .. sillon L .. individuales", "Respaldos", "Bauleras", "Puff", "Sillas", "Materas", "Lahista para cejas", "Butacones", "Sillones a medida", "OTROS"];
@@ -49,9 +59,41 @@ function attachImageFallback(image, fallback = DEFAULTS.bannerImagen) {
   });
 }
 
-function buildWhatsAppUrl(phone, productName = "") {
+function slugify(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function buildProductCode(product = {}, fallbackId = "") {
+  if (product.codigo?.trim()) return product.codigo.trim().toUpperCase();
+  if (fallbackId) return `FB-${fallbackId.slice(0, 6).toUpperCase()}`;
+  return `FB-${Date.now().toString().slice(-6)}`;
+}
+
+function buildProductUrl(product = {}) {
+  const baseUrl = `${window.location.origin}${window.location.pathname}`;
+  const anchor = product.codigo ? `producto-${slugify(product.codigo)}` : "catalogo";
+  return `${baseUrl}#${anchor}`;
+}
+
+function buildWhatsAppUrl(phone, product = null) {
   const cleanPhone = sanitizePhone(phone) || DEFAULTS.whatsapp;
-  const text = productName ? `Hola! Quiero consultar por ${productName} en Sillones FB.` : "Hola! Quiero informacion sobre los sillones de Sillones FB.";
+  const text = product
+    ? [
+        "Hola! Quiero consultar por este sillón de Sillones FB:",
+        "",
+        `Producto: ${product.nombre || "-"}`,
+        `Código: ${buildProductCode(product, product.id || "")}`,
+        `Categoría: ${product.categoria || "-"}`,
+        `Precio: ${money(product.precio)}`,
+        `Descripción: ${product.descripcion || "-"}`,
+        `Link: ${buildProductUrl(product)}`
+      ].join("\n")
+    : "Hola! Quiero informacion sobre los sillones de Sillones FB.";
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
 }
 
@@ -211,7 +253,8 @@ function renderProducts(container, items, settings) {
       badge.classList.add("hidden");
     }
 
-    button.href = buildWhatsAppUrl(settings?.whatsapp, product.nombre);
+    card.id = `producto-${slugify(buildProductCode(product, product.id || ""))}`;
+    button.href = buildWhatsAppUrl(settings?.whatsapp, product);
     container.appendChild(fragment);
   });
 }
@@ -231,6 +274,7 @@ async function loadAdminPage() {
   const homeImageUrlInput = qs("#home-banner-image-url");
   const homeImagePublicIdInput = qs("#home-banner-image-public-id");
   const homeCurrentUrlInput = qs("#home-banner-current-url");
+  const autoReplyInput = qs("#settings-auto-reply");
   const state = { products: [], draggingId: null };
 
   loginForm.addEventListener("submit", async (event) => {
@@ -280,6 +324,15 @@ async function loadAdminPage() {
     createToast("Se seleccionó el logo local del proyecto");
   });
 
+  qs("#copy-auto-reply").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(autoReplyInput.value.trim() || DEFAULTS.autoReply);
+      createToast("Respuesta automática copiada");
+    } catch (error) {
+      createToast("No se pudo copiar el texto.", "error");
+    }
+  });
+
   productForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     try {
@@ -291,6 +344,7 @@ async function loadAdminPage() {
       };
 
       const payload = {
+        codigo: qs("#product-code").value.trim().toUpperCase(),
         nombre: qs("#product-name").value.trim(),
         precio: Number(qs("#product-price").value),
         precioAnterior: Number(qs("#product-old-price").value) || null,
@@ -305,7 +359,10 @@ async function loadAdminPage() {
       validateProduct(payload);
       if (!imagePayload.imagenUrl) throw new Error("Subí una imagen con Cloudinary antes de guardar.");
 
-      await saveProduct(existingId, { ...payload, ...imagePayload });
+      const savedId = await saveProduct(existingId, { ...payload, ...imagePayload });
+      if (!payload.codigo) {
+        await saveProduct(savedId, { codigo: buildProductCode(payload, savedId) });
+      }
       playSuccessSound();
       createToast("Guardado correctamente");
       resetProductForm();
@@ -341,7 +398,8 @@ async function loadAdminPage() {
         direccion: qs("#settings-address").value.trim(),
         horario: qs("#settings-hours").value.trim(),
         cloudinaryCloudName: qs("#settings-cloud-name").value.trim(),
-        cloudinaryUploadPreset: qs("#settings-upload-preset").value.trim()
+        cloudinaryUploadPreset: qs("#settings-upload-preset").value.trim(),
+        autoReply: autoReplyInput.value.trim()
       });
       playSuccessSound();
       createToast("Ajustes guardados correctamente");
@@ -391,6 +449,7 @@ async function loadAdminPage() {
     qs("#settings-hours").value = settings?.horario || DEFAULTS.horario;
     qs("#settings-cloud-name").value = settings?.cloudinaryCloudName || "";
     qs("#settings-upload-preset").value = settings?.cloudinaryUploadPreset || "";
+    autoReplyInput.value = settings?.autoReply || DEFAULTS.autoReply;
 
     listenAllProducts((products) => {
       state.products = products;
@@ -402,6 +461,7 @@ async function loadAdminPage() {
   function resetProductForm() {
     productForm.reset();
     qs("#product-id").value = "";
+    qs("#product-code").value = "";
     qs("#product-visible").checked = true;
     qs("#product-folder").value = "productos";
     productImageUrlInput.value = "";
@@ -427,7 +487,7 @@ async function loadAdminPage() {
         <div class="admin-product-head">
           <div>
             <strong>${product.nombre}</strong>
-            <p class="muted">${product.categoria} · ${money(product.precio)}</p>
+            <p class="muted">${buildProductCode(product, product.id)} · ${product.categoria} · ${money(product.precio)}</p>
           </div>
           <span class="mini-badge">Orden ${product.orden || "-"}</span>
         </div>
@@ -484,6 +544,7 @@ async function loadAdminPage() {
 
   function fillProductForm(product) {
     qs("#product-id").value = product.id;
+    qs("#product-code").value = product.codigo || buildProductCode(product, product.id);
     qs("#product-name").value = product.nombre || "";
     qs("#product-price").value = product.precio || "";
     qs("#product-old-price").value = product.precioAnterior || "";
