@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f2d33"/>
+      <stop offset="100%" stop-color="#415158"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f3d9bc"/>
+      <stop offset="100%" stop-color="#b9875b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" rx="46" fill="url(#bg)"/>
+  <g opacity="0.12" stroke="#ffffff" stroke-width="2" fill="none">
+    <path d="M80 120h220M40 180h260M90 240h200M800 90h260M760 150h300M820 210h220M880 700h220M830 760h260M120 700h260M80 760h320"/>
+  </g>
+  <g transform="translate(120 130)" fill="none" stroke="url(#gold)" stroke-width="10">
+    <path d="M190 40c-42 0-78 33-86 77-7 37-25 65-55 97h562c-31-31-48-60-55-97-9-44-45-77-86-77H190Z"/>
+    <rect x="88" y="238" width="524" height="172" rx="34"/>
+    <rect x="56" y="444" width="588" height="54" rx="26"/>
+    <path d="M58 210c-28-22-45-47-45-77 0-33 27-60 60-60 43 0 74 33 74 75 0 29-18 50-37 62"/>
+    <path d="M643 210c28-22 45-47 45-77 0-33-27-60-60-60-43 0-74 33-74 75 0 29 18 50 37 62"/>
+  </g>
+  <g fill="url(#gold)" font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <text x="600" y="250" font-size="120" font-weight="700" letter-spacing="6">SILLONES</text>
+    <text x="600" y="430" font-size="180" font-weight="800" letter-spacing="8">FB</text>
+    <text x="600" y="655" font-size="104" font-weight="700">JESUS TE AMA</text>
+  </g>
+</svg>

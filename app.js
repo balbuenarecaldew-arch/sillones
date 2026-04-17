@@ -7,10 +7,10 @@ const DEFAULTS = {
   horario: "Lunes a sabado de 9 a 19 hs",
   bannerTexto: "Renova tu living con sillones listos para enamorar.",
   bannerBoton: "Hablar por WhatsApp",
-  bannerImagen: "logo-banner.png"
+  bannerImagen: "brand-banner.svg"
 };
 
-const CATEGORIES = ["Todos", "Esquineros", "2 cuerpos", "3 cuerpos", "Puff"];
+const CATEGORIES = ["Todos", "Esquinero .. sillon L | doble", "Esquinero .. sillon L .. individuales", "Respaldos", "Bauleras", "Puff", "Sillas", "Materas", "Lahista para cejas", "Butacones", "Sillones a medida", "OTROS"];
 const currency = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
 
 const qs = (selector, scope = document) => scope.querySelector(selector);
@@ -31,6 +31,9 @@ function resolveImageUrl(value) {
     return DEFAULTS.bannerImagen;
   }
   if (raw.includes("galeria de fotos/")) {
+    return DEFAULTS.bannerImagen;
+  }
+  if (raw.includes("logo-banner.png")) {
     return DEFAULTS.bannerImagen;
   }
   return raw;
@@ -467,7 +470,7 @@ async function loadAdminPage() {
     qs("#product-name").value = product.nombre || "";
     qs("#product-price").value = product.precio || "";
     qs("#product-old-price").value = product.precioAnterior || "";
-    qs("#product-category").value = product.categoria || "Esquineros";
+    qs("#product-category").value = product.categoria || "Esquinero .. sillon L | doble";
     qs("#product-description").value = product.descripcion || "";
     qs("#product-featured").checked = Boolean(product.destacado);
     qs("#product-offer").checked = Boolean(product.oferta);
