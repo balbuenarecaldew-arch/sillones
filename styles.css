@@ -376,7 +376,7 @@ h2 { font-size: clamp(2.2rem, 7vw, 3.2rem); }
 }
 
 @media (min-width: 980px) {
-  .hero { grid-template-columns: 1.02fr 0.98fr; align-items: stretch; }
+  .hero { grid-template-columns: minmax(240px, 0.2fr) minmax(0, 0.8fr); align-items: stretch; }
   .highlights { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .products-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .contact-card { grid-template-columns: repeat(4, minmax(0, 1fr)); }
