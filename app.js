@@ -7,7 +7,7 @@ const DEFAULTS = {
   horario: "Lunes a sabado de 9 a 19 hs",
   bannerTexto: "Renova tu living con sillones listos para enamorar.",
   bannerBoton: "Hablar por WhatsApp",
-  bannerImagen: "logo-banner.png",
+  bannerImagen: "hero-portada.png",
   autoReply: `¡Hola! Gracias por escribir a Sillones FB 🙌
 Ya recibimos tu consulta por el modelo que viste en la web.
 
@@ -41,7 +41,14 @@ function resolveTheme(value) {
 }
 
 function applyTheme(theme) {
-  document.body.dataset.theme = resolveTheme(theme);
+  const resolved = resolveTheme(theme);
+  document.documentElement.dataset.theme = resolved;
+  document.body.dataset.theme = resolved;
+  try {
+    localStorage.setItem("sillones-fb-theme", resolved);
+  } catch (error) {
+    console.warn("No se pudo persistir el tema localmente.", error);
+  }
 }
 
 function resolveImageUrl(value) {
@@ -462,6 +469,7 @@ async function loadAdminPage() {
         cloudinaryUploadPreset: qs("#settings-upload-preset").value.trim(),
         autoReply: autoReplyInput.value.trim()
       });
+      applyTheme(themeInput.value);
       playSuccessSound();
       createToast("Ajustes guardados correctamente");
     } catch (error) {

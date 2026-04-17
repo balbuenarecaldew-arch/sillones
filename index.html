@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sillones FB | Sillones en Buenos Aires</title>
   <meta name="description" content="Sillones FB en Buenos Aires. Esquineros, 2 cuerpos, 3 cuerpos y puff con atención rápida por WhatsApp.">
+  <script>
+    (function() {
+      try {
+        var theme = localStorage.getItem("sillones-fb-theme");
+        if (theme) document.documentElement.dataset.theme = theme;
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
@@ -46,7 +54,7 @@
         </div>
         <div class="hero-media">
           <div class="hero-glow"></div>
-          <img id="banner-image" src="logo-banner.png" alt="Banner principal de Sillones FB">
+          <img id="banner-image" src="hero-portada.png" alt="Portada principal de Sillones FB">
         </div>
       </section>
 
