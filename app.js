@@ -15,6 +15,7 @@ const currency = new Intl.NumberFormat("es-AR", { style: "currency", currency: "
 
 const qs = (selector, scope = document) => scope.querySelector(selector);
 const qsa = (selector, scope = document) => Array.from(scope.querySelectorAll(selector));
+const LOCAL_BANNER = "logo-banner.png";
 
 function sanitizePhone(value) {
   return String(value || "").replace(/\D/g, "");
@@ -229,6 +230,7 @@ async function loadAdminPage() {
   const productImagePublicIdInput = qs("#product-image-public-id");
   const homeImageUrlInput = qs("#home-banner-image-url");
   const homeImagePublicIdInput = qs("#home-banner-image-public-id");
+  const homeCurrentUrlInput = qs("#home-banner-current-url");
   const state = { products: [], draggingId: null };
 
   loginForm.addEventListener("submit", async (event) => {
@@ -262,11 +264,20 @@ async function loadAdminPage() {
       const uploaded = await createUploadWidget(qs("#home-banner-folder").value);
       homeImageUrlInput.value = uploaded.secure_url;
       homeImagePublicIdInput.value = uploaded.public_id;
+      homeCurrentUrlInput.value = uploaded.secure_url;
       showPreview(uploaded.secure_url, homePreview);
       createToast("Banner subido correctamente");
     } catch (error) {
       createToast(error.message || "Error al subir.", "error");
     }
+  });
+
+  qs("#home-use-local-banner").addEventListener("click", () => {
+    homeImageUrlInput.value = LOCAL_BANNER;
+    homeImagePublicIdInput.value = "";
+    homeCurrentUrlInput.value = LOCAL_BANNER;
+    showPreview(LOCAL_BANNER, homePreview);
+    createToast("Se seleccionó el logo local del proyecto");
   });
 
   productForm.addEventListener("submit", async (event) => {
@@ -314,6 +325,7 @@ async function loadAdminPage() {
         bannerImagen,
         bannerPublicId: homeImagePublicIdInput.value.trim() || existingHome?.bannerPublicId || ""
       });
+      homeCurrentUrlInput.value = bannerImagen;
       playSuccessSound();
       createToast("Home guardado correctamente");
     } catch (error) {
@@ -363,11 +375,16 @@ async function loadAdminPage() {
     const [home, settings] = await Promise.all([getHome(), getSettings()]);
     qs("#home-banner-text").value = home?.bannerTexto || DEFAULTS.bannerTexto;
     qs("#home-banner-button").value = home?.bannerBoton || DEFAULTS.bannerBoton;
+    const activeBanner = home?.bannerImagen || DEFAULTS.bannerImagen;
+    homeImageUrlInput.value = activeBanner;
+    homeCurrentUrlInput.value = activeBanner;
     if (home?.bannerImagen) {
-      homeImageUrlInput.value = home.bannerImagen;
       homeImagePublicIdInput.value = home.bannerPublicId || "";
       attachImageFallback(homePreview);
       showPreview(home.bannerImagen, homePreview);
+    } else {
+      attachImageFallback(homePreview);
+      showPreview(DEFAULTS.bannerImagen, homePreview);
     }
     qs("#settings-whatsapp").value = settings?.whatsapp || DEFAULTS.whatsapp;
     qs("#settings-address").value = settings?.direccion || DEFAULTS.direccion;

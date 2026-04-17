@@ -124,9 +124,14 @@
               </label>
               <input type="hidden" id="home-banner-image-url">
               <input type="hidden" id="home-banner-image-public-id">
+              <p class="muted">Subí tu propio banner desde acá. Cuando toques guardar, ese banner pasa a la web pública.</p>
               <button class="btn btn-secondary" id="home-upload-widget" type="button">Subir banner con Cloudinary</button>
+              <button class="btn btn-secondary" id="home-use-local-banner" type="button">Usar logo local del proyecto</button>
+              <label>Banner actual
+                <input type="text" id="home-banner-current-url" readonly>
+              </label>
               <div class="image-preview-wrap"><img id="home-banner-preview" class="image-preview hidden" alt="Vista previa del banner"></div>
-              <button class="btn btn-primary" type="submit">Guardar home</button>
+              <button class="btn btn-primary" type="submit">Guardar banner y home</button>
             </form>
           </article>
 
