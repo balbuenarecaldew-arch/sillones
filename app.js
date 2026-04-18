@@ -19,6 +19,7 @@ En un momento te respondemos con:
 
 Si querés, también podés adelantarnos tu zona y el color que te interesa para ayudarte más rápido.`
 };
+const DELETE_SECRET = "SILLONESFB";
 
 const CATEGORIES = ["Todos", "Esquinero .. sillon L | doble", "Esquinero .. sillon L .. individuales", "Respaldos", "Bauleras", "Puff", "Sillas", "Materas", "Lahista para cejas", "Butacones", "Sillones a medida", "OTROS"];
 const currency = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
@@ -671,6 +672,11 @@ async function loadAdminPage() {
       qs(".js-edit", item).addEventListener("click", () => fillProductForm(product));
       qs(".js-delete", item).addEventListener("click", async () => {
         if (!window.confirm(`Se eliminara "${product.nombre}". Deseas continuar?`)) return;
+        const secret = window.prompt(`Para eliminar "${product.nombre}", escribi la clave secreta.`);
+        if (secret !== DELETE_SECRET) {
+          createToast("Clave incorrecta. No se eliminó el producto.", "error");
+          return;
+        }
         try {
           await removeProduct(product.id);
           createToast("Producto eliminado");
