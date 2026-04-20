@@ -284,10 +284,16 @@ async function loadPublicPage() {
   }
 
   function renderAllSections() {
-    renderProducts(qs("#offers-grid"), currentProducts.filter((product) => product.oferta), settings);
-    renderProducts(qs("#featured-grid"), currentProducts.filter((product) => product.destacado), settings);
+    const offers = currentProducts.filter((product) => product.oferta);
+    const featured = currentProducts.filter((product) => product.destacado);
+    const isFiltered = currentCategory !== "Todos";
+
+    toggleHidden(qs("#ofertas-section"), isFiltered || !offers.length);
+    toggleHidden(qs("#featured-section"), isFiltered || !featured.length);
+
+    renderProducts(qs("#offers-grid"), offers, settings);
+    renderProducts(qs("#featured-grid"), featured, settings);
     renderCatalog();
-    qs("#offer-count").textContent = String(currentProducts.filter((product) => product.oferta).length);
   }
 
   function renderCatalog() {
